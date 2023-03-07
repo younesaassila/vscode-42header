@@ -9,7 +9,7 @@
       ## ## ##*/
 
 import moment = require('moment')
-import { languageDemiliters } from './delimiters'
+import { languageDelimiters } from './delimiters'
 
 export type HeaderInfo = {
   filename: string,
@@ -42,7 +42,7 @@ const genericTemplate = `
  * Get specific header template for languageId
  */
 const getTemplate = (languageId: string) => {
-  const [left, right] = languageDemiliters[languageId]
+  const [left, right] = languageDelimiters[languageId]
   const width = left.length
 
   // Replace all delimiters with ones for current language
@@ -73,7 +73,7 @@ const parseDate = (date: string) =>
  * Check if language is supported
  */
 export const supportsLanguage = (languageId: string) =>
-  languageId in languageDemiliters
+  languageId in languageDelimiters
 
 /**
  * Returns current header text if present at top of document
