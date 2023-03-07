@@ -46,7 +46,7 @@ const newHeaderInfo = (document: TextDocument, headerInfo?: HeaderInfo) => {
   return Object.assign({},
     // This will be overwritten if headerInfo is not null
     {
-      createdAt: moment(),
+      createdAt: moment().startOf('hour'),
       createdBy: user
     },
     headerInfo,
@@ -54,7 +54,7 @@ const newHeaderInfo = (document: TextDocument, headerInfo?: HeaderInfo) => {
       filename: basename(document.fileName),
       author: `${user} <${mail}>`,
       updatedBy: user,
-      updatedAt: moment()
+      updatedAt: moment().startOf('hour')
     }
   )
 }
