@@ -101,6 +101,8 @@ const startUpdateOnSaveWatcher = (subscriptions: vscode.Disposable[]) =>
     const document = event.document
     const currentHeader = extractHeader(document.getText())
 
+    if (!document.isDirty) return // No need to update
+
     event.waitUntil(
       Promise.resolve(
         supportsLanguage(document.languageId) && currentHeader ?
