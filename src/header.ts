@@ -55,7 +55,7 @@ const getTemplate = (languageId: string) => {
  * Fit value to correct field width, padded with spaces
  */
 const pad = (value: string, width: number) =>
-  value.concat(' '.repeat(width)).substr(0, width)
+  value.concat(' '.repeat(width)).substring(0, width)
 
 /**
  * Stringify Date to correct format for header
@@ -98,7 +98,7 @@ const fieldRegex = (name: string) =>
 const getFieldValue = (header: string, name: string) => {
   const [_, offset, field] = genericTemplate.match(fieldRegex(name))
 
-  return header.substr(offset.length, field.length)
+  return header.substring(offset.length, offset.length + field.length)
 }
 
 /**
@@ -107,9 +107,9 @@ const getFieldValue = (header: string, name: string) => {
 const setFieldValue = (header: string, name: string, value: string) => {
   const [_, offset, field] = genericTemplate.match(fieldRegex(name))
 
-  return header.substr(0, offset.length)
+  return header.substring(0, offset.length)
     .concat(pad(value, field.length))
-    .concat(header.substr(offset.length + field.length))
+    .concat(header.substring(offset.length + field.length))
 }
 
 /**
