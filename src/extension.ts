@@ -33,7 +33,7 @@ const getCurrentUser = () =>
  */
 const getCurrentUserMail = () =>
   vscode.workspace.getConfiguration()
-    .get('42header.email') || `${getCurrentUser()}@student.42.fr`
+    .get('42header.email') || process.env['MAIL'] || `${getCurrentUser()}@student.42.fr`
 
 /**
  * Update HeaderInfo with last update author and date, and update filename
@@ -46,7 +46,7 @@ const newHeaderInfo = (document: TextDocument, headerInfo?: HeaderInfo) => {
   return Object.assign({},
     // This will be overwritten if headerInfo is not null
     {
-      createdAt: moment(),
+      createdAt: moment().startOf('hour'),
       createdBy: user
     },
     headerInfo,
@@ -54,7 +54,7 @@ const newHeaderInfo = (document: TextDocument, headerInfo?: HeaderInfo) => {
       filename: basename(document.fileName),
       author: `${user} <${mail}>`,
       updatedBy: user,
-      updatedAt: moment()
+      updatedAt: moment().startOf('hour')
     }
   )
 }
@@ -72,7 +72,7 @@ const insertHeaderHandler = () => {
 
       if (currentHeader)
         editor.replace(
-          new Range(0, 0, 12, 0),
+          new Range(0, 0, 11, 0),
           renderHeader(
             document.languageId,
             newHeaderInfo(document, getHeaderInfo(currentHeader))
@@ -84,7 +84,7 @@ const insertHeaderHandler = () => {
           renderHeader(
             document.languageId,
             newHeaderInfo(document)
-          )
+          ) + '\n'
         )
     })
   else
@@ -101,12 +101,14 @@ const startUpdateOnSaveWatcher = (subscriptions: vscode.Disposable[]) =>
     const document = event.document
     const currentHeader = extractHeader(document.getText())
 
+    if (!document.isDirty) return // No need to update
+
     event.waitUntil(
       Promise.resolve(
         supportsLanguage(document.languageId) && currentHeader ?
           [
             TextEdit.replace(
-              new Range(0, 0, 12, 0),
+              new Range(0, 0, 11, 0),
               renderHeader(
                 document.languageId,
                 newHeaderInfo(document, getHeaderInfo(currentHeader))

@@ -9,7 +9,7 @@
       ## ## ##*/
 
 import moment = require('moment')
-import { languageDemiliters } from './delimiters'
+import { languageDelimiters } from './delimiters'
 
 export type HeaderInfo = {
   filename: string,
@@ -27,22 +27,21 @@ const genericTemplate = `
 ********************************************************************************
 *                                                                              *
 *                                                         :::      ::::::::    *
-*    $FILENAME__________________________________        :+:      :+:    :+:    *
+*    $FILENAME___________________________________       :+:      :+:    :+:    *
 *                                                     +:+ +:+         +:+      *
-*    By: $AUTHOR________________________________    +#+  +:+       +#+         *
+*    By: $AUTHOR_________________________________   +#+  +:+       +#+         *
 *                                                 +#+#+#+#+#+   +#+            *
-*    Created: $CREATEDAT_________ by $CREATEDBY_       #+#    #+#              *
-*    Updated: $UPDATEDAT_________ by $UPDATEDBY_      ###   ########.fr        *
+*    Created: $CREATEDAT_________ by $CREATEDBY__      #+#    #+#              *
+*    Updated: $UPDATEDAT_________ by $UPDATEDBY__     ###   ########.fr        *
 *                                                                              *
 ********************************************************************************
-
 `.substring(1)
 
 /**
  * Get specific header template for languageId
  */
 const getTemplate = (languageId: string) => {
-  const [left, right] = languageDemiliters[languageId]
+  const [left, right] = languageDelimiters[languageId]
   const width = left.length
 
   // Replace all delimiters with ones for current language
@@ -55,7 +54,7 @@ const getTemplate = (languageId: string) => {
  * Fit value to correct field width, padded with spaces
  */
 const pad = (value: string, width: number) =>
-  value.concat(' '.repeat(width)).substr(0, width)
+  value.concat(' '.repeat(width)).substring(0, width)
 
 /**
  * Stringify Date to correct format for header
@@ -73,7 +72,7 @@ const parseDate = (date: string) =>
  * Check if language is supported
  */
 export const supportsLanguage = (languageId: string) =>
-  languageId in languageDemiliters
+  languageId in languageDelimiters
 
 /**
  * Returns current header text if present at top of document
@@ -98,7 +97,7 @@ const fieldRegex = (name: string) =>
 const getFieldValue = (header: string, name: string) => {
   const [_, offset, field] = genericTemplate.match(fieldRegex(name))
 
-  return header.substr(offset.length, field.length)
+  return header.substring(offset.length, offset.length + field.length)
 }
 
 /**
@@ -107,9 +106,9 @@ const getFieldValue = (header: string, name: string) => {
 const setFieldValue = (header: string, name: string, value: string) => {
   const [_, offset, field] = genericTemplate.match(fieldRegex(name))
 
-  return header.substr(0, offset.length)
+  return header.substring(0, offset.length)
     .concat(pad(value, field.length))
-    .concat(header.substr(offset.length + field.length))
+    .concat(header.substring(offset.length + field.length))
 }
 
 /**
